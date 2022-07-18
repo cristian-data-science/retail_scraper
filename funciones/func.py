@@ -27,28 +27,18 @@ class funciones_globales():
         sleep(2)
         vermas.click()
         sleep(2)
-
         disable_nextb = driver.find_element(By.XPATH, value='//*[@id="root"]/main/div/article/div[3]/div/div[4]/div/button[7]/span')
         val = disable_nextb.get_attribute("class")
-        print("###################### this ###############################")
-        print(val)
-        print("###################### thos ###############################")
-
         # iteramos todas las paginas hasta que llegamos al final de las opciones con el atributo "disabled" del tagg button next
 
         while val == "navButton-icon-yS-":
+            
             next_button = driver.find_element(By.XPATH, value='//*[@id="root"]/main/div/article/div[3]/div/div[4]/div/button[7]')
             next_button.click()
             sleep(1)
-            vermas = driver.find_element(By.CLASS_NAME, value = 'category-loadMore-yau')
-            vermas.click()
-            sleep(1)
             
-
-            
-            
-            
-
-#navButton-icon_disabled-UGx
-
-        sleep(10)
+            if val == "navButton-icon-yS-":
+                vermas = driver.find_element(By.CLASS_NAME, value = 'category-loadMore-yau')
+                vermas.click()
+            else:
+                print("última página")

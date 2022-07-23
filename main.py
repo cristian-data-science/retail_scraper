@@ -20,7 +20,8 @@ class base_test(unittest.TestCase):
         self.driver = webdriver.Chrome(executable_path= r'C:\chrome_driver\chromedriver.exe')
         # driver=webdriver.Firefox(executable_path="C:\Drivers\geckodriver.exe")
         driver = self.driver
-        driver.implicitly_wait(30)
+        # este implicity contrala el time out de la función scann multipaginas
+        driver.implicitly_wait(5)
         driver.maximize_window()
         #driver.get("https://patagonia-testpos.sandbox.operations.dynamics.com/")        
 
@@ -28,6 +29,9 @@ class base_test(unittest.TestCase):
         driver = self.driver
         f = funciones_globales(driver)
         f.scann(v.url_north_h)
+        f.scann(v.url_north_m)
+        f.scann(v.url_north_n)
+        f.scann(v.url_north_e)
 
 
 

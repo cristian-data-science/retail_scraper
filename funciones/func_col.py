@@ -144,16 +144,16 @@ class funciones_globales():
                 #print(vuelta)    
                 print("TimeOut!!!!")
         
-        df_final.to_csv(f"{cat}.csv",index = False)
+        df_final.to_csv(f"./resultados/{cat}.csv",index = False)
 
     def clean_data(self):
         
-        df_hombre = pd.read_csv("./hombre.csv",encoding="utf-8")
-        df_equipamiento = pd.read_csv("./equipamiento.csv",encoding="utf-8")
-        df_mujer = pd.read_csv("./mujer.csv",encoding="utf-8")
-        df_niño = pd.read_csv("./niño.csv",encoding="utf-8")
+        df_hombre = pd.read_csv("./resultados/hombre.csv",encoding="utf-8")
+        df_equipamiento = pd.read_csv("./resultados/equipamiento.csv",encoding="utf-8")
+        df_mujer = pd.read_csv("./resultados/mujer.csv",encoding="utf-8")
+        df_niño = pd.read_csv("./resultados/niño.csv",encoding="utf-8")
         
 
         final = df_hombre.append(df_mujer, ignore_index=True).append(df_niño, ignore_index=True).append(df_equipamiento, ignore_index=True)
         #final = final.reset_index()
-        final.to_excel("./northface_final.xlsx", index = False)
+        final.to_excel("./resultados/northface_final.xlsx", index = False)

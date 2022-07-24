@@ -8,7 +8,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import TimeoutException
-from funciones.func import funciones_globales
+from funciones.func_north import funciones_globales
 from selenium.webdriver.chrome.options import Options
 import pandas as pd
 

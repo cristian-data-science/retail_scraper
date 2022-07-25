@@ -2,6 +2,8 @@ import time
 import unittest
 from time import sleep
 
+from datetime import date
+
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
@@ -90,7 +92,8 @@ class funciones_globales():
                     #print("ver mas existe")
                     vermas = driver.find_element(By.CLASS_NAME, value = 'category-loadMore-yau')
                     vermas.click()
-                    driver.execute_script("window.scrollTo(0, 1080)") 
+                    # bajar el scroll
+                    driver.execute_script("window.scrollTo(0, 4500)") 
                     #print(vuelta)
                     vuelta = vuelta + 1
                     disable_nextb = driver.find_element(By.CLASS_NAME, value='navButton-icon-yS-')
@@ -121,6 +124,7 @@ class funciones_globales():
                 link_product = [link.get_attribute("href") for link in link_product]
                 #print(link_product)
 
+                # append de la ultima vuelta/pagina por time out. "ver mas" no encontrado
                 df = pd.DataFrame(list(zip(name_product, price_product, link_product)), columns=['nombre producto', 'precio', 'link'])
 
                 df_final = df_final.append(df)
@@ -137,6 +141,10 @@ class funciones_globales():
 
                 df_final =df_final.assign(categoria = cat)
                 print(url_north_h)
+
+                today = date.today()
+                df_final =df_final.assign(fecha = date.today())
+
                 df_final = df_final.reset_index(drop=True)
                 print(df_final)
 
@@ -144,16 +152,16 @@ class funciones_globales():
                 #print(vuelta)    
                 print("TimeOut!!!!")
         
-        df_final.to_csv(f"./resultados/{cat}.csv",index = False)
+        df_final.to_csv(f"./resultados/northface/{cat}.csv",index = False)
 
     def clean_data(self):
         
-        df_hombre = pd.read_csv("./resultados/hombre.csv",encoding="utf-8")
-        df_equipamiento = pd.read_csv("./resultados/equipamiento.csv",encoding="utf-8")
-        df_mujer = pd.read_csv("./resultados/mujer.csv",encoding="utf-8")
-        df_niño = pd.read_csv("./resultados/niño.csv",encoding="utf-8")
+        df_hombre = pd.read_csv("./resultados/northface/hombre.csv",encoding="utf-8")
+        df_equipamiento = pd.read_csv("./resultados/northface/equipamiento.csv",encoding="utf-8")
+        df_mujer = pd.read_csv("./resultados/northface/mujer.csv",encoding="utf-8")
+        df_niño = pd.read_csv("./resultados/northface/niño.csv",encoding="utf-8")
         
 
         final = df_hombre.append(df_mujer, ignore_index=True).append(df_niño, ignore_index=True).append(df_equipamiento, ignore_index=True)
         #final = final.reset_index()
-        final.to_excel("./resultados/northface_final.xlsx", index = False)
+        final.to_excel("./resultados/northface/northface_final.xlsx", index = False)

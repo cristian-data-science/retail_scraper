@@ -1,5 +1,6 @@
 import time
 import unittest
+from datetime import date
 from time import sleep
 
 from selenium import webdriver
@@ -24,136 +25,98 @@ class funciones_globales():
     
     # Función para escanear y recolectar nombre, precio, y link de producto. antes de entrar al while la función clickea en "ver más" y cuando entra al while comienza a recolectar y a saltar pagina
     # La recolección de la ultima pagina se genera dentro del except y tambien cambia el valor de val por el atributo de la ultima hoja para que no entre nuevamente a la iteración
-    def scann(self, url_north_h):
-        self.driver.get(url_north_h)
+    def scann(self, url_col_h):
+        self.driver.get(url_col_h)
         driver = self.driver
-        vermas = driver.find_element(By.CLASS_NAME, value = 'category-loadMore-yau')
-        sleep(1)
-        vermas.click()
-        sleep(1)
-        disable_nextb = driver.find_element(By.CLASS_NAME, value='navButton-icon-yS-')
-        val = disable_nextb.get_attribute("class")
+
+        #disable_nextb = driver.find_element(By.CLASS_NAME, value='navButton-icon-yS-')
+       # val = disable_nextb.get_attribute("class")
 
 
         # iteramos todas las páginas hasta que llegamos al final de las opciones con el atributo "disabled" del tagg button next
         # En cada vuelta se recolectan los datos
-        vuelta = 2
-        x = 0
-        name_product = []
+        sleep(5)
+        driver.execute_script("window.scrollTo(0, 1080)") 
+
+        #next_button_value = driver.find_element(By.CLASS_NAME, value= 'arrow-paginador-right')
+        #print(next_button_value.text)
+        pagina = 1
+        #name_df = []
         df_final = pd.DataFrame(columns=['nombre producto', 'precio', 'link'])
-        #df = pd.DataFrame(columns=['Nombre producto', 'precio', 'link'])
-        while val == "navButton-icon-yS-" or val == "navButton-icon-yS-":
-            # Comienza la recolección por vuelta    
-            name_product = driver.find_elements(By.XPATH, value= '//*[@id="root"]/main/div/article/div[3]/div/section/div/div/div[*]/div[3]/a/span')                        
-            name_product = [name.text for name in name_product]
-            #print(name_product)
-            price_product = driver.find_elements(By.XPATH, value= '//*[@id="root"]/main/div/article/div[3]/div/section/div/div/div[*]/div[3]/div/div/div[1]/div')
-            price_product = [price.text for price in price_product]
-            #print(price_product)
-            link_product = driver.find_elements(By.XPATH, value= '//*[@id="root"]/main/div/article/div[3]/div/section/div/div/div[*]/div[2]/div/a')
-            link_product = [link.get_attribute("href") for link in link_product]
-            #print(link_product)
+        
+        val = "right"
+        while val == "right" :
+            #print(next_button_value.text)
 
-            df = pd.DataFrame(list(zip(name_product, price_product, link_product)), columns=['nombre producto', 'precio', 'link'])
-            
-            df_final = df_final.append(df)
-
-            if url_north_h == 'https://www.thenorthface.cl/hombre?page=1':
-                cat = "hombre"
-            if url_north_h == 'https://www.thenorthface.cl/mujer?page=1':
-                cat = "mujer" 
-            if url_north_h == 'https://www.thenorthface.cl/equipamiento?page=1':
-                cat = "equipamiento" 
-            if url_north_h == 'https://www.thenorthface.cl/ni-os?page=1':
-                cat = "niño"    
+            driver.execute_script("window.scrollTo(0, 2700)")
+            sleep(1) 
+            driver.execute_script("window.scrollTo(0, 4800)")
+           #sleep(1) 
 
 
-            df_final =df_final.assign(categoria = cat)
-            print(url_north_h)
-            df_final = df_final.reset_index(drop=True)
-            print(df_final)
-
-            #for name in name_product:
-                #print(name.text)
-
-            # logica para clickear pagina siguiente. tanto adelante como  atras comparten el mismo atributo en su clase por eso se crea una lista
-            # en la primera vuelta x vale 0 porque solo esta habiliatdo el "siguiente" en la segunda vuelta y demases se activa el "atras" y el "siguiente"
-
-            next_button = driver.find_elements(By.CLASS_NAME, value='navButton-icon-yS-')
-            next_button[x].click()
-            sleep(1)
-
-            #print("justo antes del if ver mas")
-           
             try:
-                if WebDriverWait(driver, 2).until(EC.element_to_be_clickable((By.CLASS_NAME, "category-loadMore-yau"))):
-                    #print("ver mas existe")
-                    vermas = driver.find_element(By.CLASS_NAME, value = 'category-loadMore-yau')
-                    vermas.click()
-                    driver.execute_script("window.scrollTo(0, 1080)") 
-                    #print(vuelta)
-                    vuelta = vuelta + 1
-                    disable_nextb = driver.find_element(By.CLASS_NAME, value='navButton-icon-yS-')
-                    val = disable_nextb.get_attribute("class")
-                    #print(val)
-                    x = 1
+                close_popup = next_button_value = WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="leadinModal-3135968"]/div[2]/button')))
+                close_popup.click()
+                print("cerrando popup")
+                sleep(2)
+                
+            except TimeoutException as ex:
+                    print(ex.msg)
+                    print("No hay popup")
 
-                else:
-                    print("else activado")
+            name_product = driver.find_elements(By.XPATH, value= '/html/body/div[3]/div/div[1]/div/div[4]/div/div[2]/section/div[2]/div/div[5]/div/div[2]/div/div[2]/div/div/div/div[3]/div[*]/section/a/article/div[3]/h3/span')
+            name_list = [name.text for name in name_product]
+            price_product = driver.find_elements(By.XPATH, value = '/html/body/div[3]/div/div[1]/div/div[4]/div/div[2]/section/div[2]/div/div[5]/div/div[2]/div/div[2]/div/div/div/div[3]/div[*]/section/a/article/div[6]/div/div[2]/span/span/span')
+            price_list = [price.text for price in price_product]
+            link_product = driver.find_elements(By.XPATH, value= '/html/body/div[3]/div/div[1]/div/div[4]/div/div[2]/section/div[2]/div/div[5]/div/div[2]/div/div[2]/div/div/div/div[3]/div[*]/section/a')
+            link_list = [link.get_attribute("href") for link in link_product]
+            
+
+            df = pd.DataFrame(list(zip(name_list, price_list, link_list)), columns=['nombre producto', 'precio', 'link'])
+            df_final = df_final.append(df)
+            if url_col_h == 'https://www.columbiachile.cl/Hombre':
+                cat = "hombre"
+            if url_col_h == 'https://www.columbiachile.cl/mujer':
+                cat = "mujer" 
+            if url_col_h == 'https://www.columbiachile.cl/155?map=productClusterIds':
+                cat = "footwear" 
+            if url_col_h == 'https://www.columbiachile.cl/ninos':
+                cat = "niño"    
+            
+            df_final =df_final.assign(categoria = cat)
+
+            today = date.today()
+            df_final =df_final.assign(fecha = date.today())
+
+            df_final = df_final.reset_index(drop=True)
+            print(f"################################# Pagina: {pagina}#########################################")
+            print(df_final)
+            
                     
-                    next_button = driver.find_element(By.XPATH, value='//*[@id="root"]/main/div/article/div[3]/div/div[4]/div/button[7]')
-                    next_button.click()
-                    sleep(1)
-                    
+            try:
+                next_button_value = WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.CLASS_NAME, "arrow-paginador-right")))
+                next_button_value.click()
+                pagina = pagina + 1
+                sleep(3)
+
             except TimeoutException as ex:
                 print(ex.msg)
-                disable_nextb = driver.find_element(By.CLASS_NAME, value='navButton-icon_disabled-UGx')
-                val = disable_nextb.get_attribute("class")
-                
-                # Recolección de la ultima página y salida del bucle while
-                name_product = driver.find_elements(By.XPATH, value= '//*[@id="root"]/main/div/article/div[3]/div/section/div/div/div[*]/div[3]/a/span')                        
-                name_product = [name.text for name in name_product]
-                #print(name_product)
-                price_product = driver.find_elements(By.XPATH, value= '//*[@id="root"]/main/div/article/div[3]/div/section/div/div/div[*]/div[3]/div/div/div[1]/div')
-                price_product = [price.text for price in price_product]
-                #print(price_product)
-                link_product = driver.find_elements(By.XPATH, value= '//*[@id="root"]/main/div/article/div[3]/div/section/div/div/div[*]/div[2]/div/a')
-                link_product = [link.get_attribute("href") for link in link_product]
-                #print(link_product)
+                print("TimeOut")
+                val = "notright"
+                sleep(2)
+                print("saliendo del while")
 
-                df = pd.DataFrame(list(zip(name_product, price_product, link_product)), columns=['nombre producto', 'precio', 'link'])
-
-                df_final = df_final.append(df)
-
-                if url_north_h == 'https://www.thenorthface.cl/hombre?page=1':
-                    cat = "hombre"
-                if url_north_h == 'https://www.thenorthface.cl/mujer?page=1':
-                    cat = "mujer" 
-                if url_north_h == 'https://www.thenorthface.cl/equipamiento?page=1':
-                    cat = "equipamiento" 
-                if url_north_h == 'https://www.thenorthface.cl/ni-os?page=1':
-                    cat = "niño"    
-
-
-                df_final =df_final.assign(categoria = cat)
-                print(url_north_h)
-                df_final = df_final.reset_index(drop=True)
-                print(df_final)
-
-
-                #print(vuelta)    
-                print("TimeOut!!!!")
-        
-        df_final.to_csv(f"./resultados/{cat}.csv",index = False)
-
+        df_final.to_csv(f"./resultados/columbia/{cat}.csv",index = False, encoding= "utf-8")    
+            
+            
     def clean_data(self):
         
-        df_hombre = pd.read_csv("./resultados/hombre.csv",encoding="utf-8")
-        df_equipamiento = pd.read_csv("./resultados/equipamiento.csv",encoding="utf-8")
-        df_mujer = pd.read_csv("./resultados/mujer.csv",encoding="utf-8")
-        df_niño = pd.read_csv("./resultados/niño.csv",encoding="utf-8")
+        df_hombre = pd.read_csv("./resultados/columbia/hombre.csv",encoding="utf-8")
+        df_footwear = pd.read_csv("./resultados/columbia/footwear.csv",encoding="utf-8")
+        df_mujer = pd.read_csv("./resultados/columbia/mujer.csv",encoding="utf-8")
+        df_niño = pd.read_csv("./resultados/columbia/niño.csv",encoding="utf-8")
         
 
-        final = df_hombre.append(df_mujer, ignore_index=True).append(df_niño, ignore_index=True).append(df_equipamiento, ignore_index=True)
+        final = df_hombre.append(df_mujer, ignore_index=True).append(df_niño, ignore_index=True).append(df_footwear, ignore_index=True)
         #final = final.reset_index()
-        final.to_excel("./resultados/northface_final.xlsx", index = False)
+        final.to_excel("./resultados/columbia/columbia_final.xlsx", index = False)

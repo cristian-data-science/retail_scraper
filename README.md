@@ -1,3 +1,4 @@
 # Retail web scraper 
 
-### falta arrelar la iteración final de la ultima pagina
+### Northface 100% funcional con cuatro categorías
+### Columbia - en construcción

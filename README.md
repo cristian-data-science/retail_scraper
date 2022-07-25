@@ -1,4 +1,5 @@
 # Retail web scraper 
 
 ### Northface 100% funcional con cuatro categorías
-### Columbia - en construcción
+### Columbia -00% funcional con cuatro categorías
+### Fecha del scraping agregada

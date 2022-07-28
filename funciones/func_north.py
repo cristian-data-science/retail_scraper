@@ -80,10 +80,18 @@ class funciones_globales():
 
             # logica para clickear pagina siguiente. tanto adelante como  atras comparten el mismo atributo en su clase por eso se crea una lista
             # en la primera vuelta x vale 0 porque solo esta habiliatdo el "siguiente" en la segunda vuelta y demases se activa el "atras" y el "siguiente"
-
-            next_button = driver.find_elements(By.CLASS_NAME, value='navButton-icon-yS-')
-            next_button[x].click()
             sleep(1)
+            driver.execute_script("window.scrollTo(0, 4000)")
+
+            try:
+                if WebDriverWait(driver, 2).until(EC.element_to_be_clickable((By.CLASS_NAME, "navButton-icon-yS-"))):
+                    next_button = driver.find_element(By.XPATH, value='//*[@id="root"]/main/div/article/div[3]/div/div[4]/div/button[7]')
+                    next_button.click()
+            except TimeoutException as ex:
+                print(ex.msg)
+                print("exept del timeout next_button")
+
+            #sleep(1)
 
             #print("justo antes del if ver mas")
            
@@ -93,7 +101,7 @@ class funciones_globales():
                     vermas = driver.find_element(By.CLASS_NAME, value = 'category-loadMore-yau')
                     vermas.click()
                     # bajar el scroll
-                    driver.execute_script("window.scrollTo(0, 4500)") 
+                    driver.execute_script("window.scrollTo(0, 4000)") 
                     #print(vuelta)
                     vuelta = vuelta + 1
                     disable_nextb = driver.find_element(By.CLASS_NAME, value='navButton-icon-yS-')
@@ -104,7 +112,8 @@ class funciones_globales():
                 else:
                     print("else activado")
                     
-                    next_button = driver.find_element(By.XPATH, value='//*[@id="root"]/main/div/article/div[3]/div/div[4]/div/button[7]')
+                    next_button = drive
+                    r.find_element(By.XPATH, value='//*[@id="root"]/main/div/article/div[3]/div/div[4]/div/button[7]')
                     next_button.click()
                     sleep(1)
                     

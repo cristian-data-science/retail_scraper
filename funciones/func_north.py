@@ -31,6 +31,7 @@ class funciones_globales():
         driver = self.driver
         vermas = driver.find_element(By.CLASS_NAME, value = 'category-loadMore-yau')
         sleep(1)
+        driver.execute_script("window.scrollTo(0, 3000)") 
         vermas.click()
         sleep(1)
         disable_nextb = driver.find_element(By.CLASS_NAME, value='navButton-icon-yS-')
@@ -39,12 +40,13 @@ class funciones_globales():
 
         # iteramos todas las páginas hasta que llegamos al final de las opciones con el atributo "disabled" del tagg button next
         # En cada vuelta se recolectan los datos
-        vuelta = 2
+        vuelta = 1
         x = 0
         name_product = []
         df_final = pd.DataFrame(columns=['nombre producto', 'precio', 'link'])
         #df = pd.DataFrame(columns=['Nombre producto', 'precio', 'link'])
         while val == "navButton-icon-yS-" or val == "navButton-icon-yS-":
+            print(vuelta)
             # Comienza la recolección por vuelta    
             name_product = driver.find_elements(By.XPATH, value= '//*[@id="root"]/main/div/article/div[3]/div/section/div/div/div[*]/div[3]/a/span')                        
             name_product = [name.text for name in name_product]
@@ -82,14 +84,18 @@ class funciones_globales():
             # en la primera vuelta x vale 0 porque solo esta habiliatdo el "siguiente" en la segunda vuelta y demases se activa el "atras" y el "siguiente"
             sleep(1)
             driver.execute_script("window.scrollTo(0, 4000)")
-
+## hacer un if que comrpuebe la cantidad de elementos de la lista si es uno que x sea "0" y si es 2 que x sea 1
+            next_button = driver.find_elements(By.CLASS_NAME, value='navButton-icon-yS-')
             try:
-                if WebDriverWait(driver, 2).until(EC.element_to_be_clickable((By.CLASS_NAME, "navButton-icon-yS-"))):
-                    next_button = driver.find_element(By.XPATH, value='//*[@id="root"]/main/div/article/div[3]/div/div[4]/div/button[7]')
-                    next_button.click()
-            except TimeoutException as ex:
-                print(ex.msg)
-                print("exept del timeout next_button")
+                next_button[x].click()
+                sleep(1)
+            except IndexError as e:
+                print(e)
+                print("index error controlado")    
+
+
+
+
 
             #sleep(1)
 
@@ -98,8 +104,11 @@ class funciones_globales():
             try:
                 if WebDriverWait(driver, 2).until(EC.element_to_be_clickable((By.CLASS_NAME, "category-loadMore-yau"))):
                     #print("ver mas existe")
+                    driver.execute_script("window.scrollTo(0, 2500)") 
+                    sleep(1)
                     vermas = driver.find_element(By.CLASS_NAME, value = 'category-loadMore-yau')
                     vermas.click()
+                    
                     # bajar el scroll
                     driver.execute_script("window.scrollTo(0, 4000)") 
                     #print(vuelta)
@@ -113,12 +122,16 @@ class funciones_globales():
                     print("else activado")
                     
                     next_button = drive
-                    r.find_element(By.XPATH, value='//*[@id="root"]/main/div/article/div[3]/div/div[4]/div/button[7]')
+                    find_element(By.XPATH, value='//*[@id="root"]/main/div/article/div[3]/div/div[4]/div/button[7]')
                     next_button.click()
+                    driver.execute_script("window.scrollTo(0, 4000)")
                     sleep(1)
                     
             except TimeoutException as ex:
                 print(ex.msg)
+                
+
+                
                 disable_nextb = driver.find_element(By.CLASS_NAME, value='navButton-icon_disabled-UGx')
                 val = disable_nextb.get_attribute("class")
                 
@@ -159,8 +172,8 @@ class funciones_globales():
 
 
                 #print(vuelta)    
-                print("TimeOut!!!!")
-        
+                print("TimeOut!!!!") 
+        df_final = df_final.drop_duplicates()
         df_final.to_csv(f"./resultados/northface/{cat}.csv",index = False)
 
     def clean_data(self):
@@ -173,4 +186,5 @@ class funciones_globales():
 
         final = df_hombre.append(df_mujer, ignore_index=True).append(df_niño, ignore_index=True).append(df_equipamiento, ignore_index=True)
         #final = final.reset_index()
+        final = final.drop_duplicates()
         final.to_excel("./resultados/northface/northface_final.xlsx", index = False)

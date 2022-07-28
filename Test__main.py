@@ -17,8 +17,8 @@ import pandas as pd
 from variables import var as v
 
 chrome_options = Options()
-#chrome_options.headless = True
-chrome_options.add_argument("--window-size=1920,1080")
+chrome_options.headless = True
+chrome_options.add_argument("--window-size=1080,1920")
 chrome_options.add_argument('--ignore-certificate-errors')
 chrome_options.add_argument('--allow-running-insecure-content')
 chrome_options.add_argument("--disable-extensions")

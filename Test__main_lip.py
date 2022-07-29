@@ -35,7 +35,13 @@ chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64
 class base_test(unittest.TestCase):
 
     def setUp(self):
+         
+        # Descomentar linea siguiente para ejecución en windows
         self.driver = webdriver.Chrome(executable_path= r'C:\chrome_driver\chromedriver.exe',options=chrome_options)
+        
+        # Descomentar linea siguiente para ejecución en linux
+        #self.driver = webdriver.Chrome(options=chrome_options)
+        
         # driver=webdriver.Firefox(executable_path="C:\Drivers\geckodriver.exe")
         driver = self.driver
         # este implicity contrala el time out de la función scann multipaginas
